@@ -16,7 +16,7 @@ class Animator:
     self.Y: list of lists   N个列表存储axes中N条折线的Y坐标
     '''
 
-    def __init__(self, xlabel=None, ylabel=None, xlim=None, ylim=None,
+    def __init__(self, title, xlabel=None, ylabel=None, xlim=None, ylim=None,
                  xscale='linear', yscale='linear', legend=None, fmts=('go-', 'r+--', 'b.-.', '^:'),
                  nrows=1, ncols=1):
         self.fig, self.axes = plt.subplots(nrows, ncols)
@@ -44,14 +44,15 @@ class Animator:
         n = len(y)
         # 第一次调用时初始化X和Y列表
         if not self.X:
-            self.X = []
+            self.X = [[] for _ in range(n)]
         if not self.Y:
             self.Y = [[] for _ in range(n)]
         if x is not None and y is not None:
-            self.X.append(x)
             count = 0
             for item in y:
-                self.Y[count].append(item)
+                if item is not None:
+                    self.X[count].append(x)
+                    self.Y[count].append(item)
                 count = count + 1
 
         axes_plot(self.axes[0], self.X, self.Y, self.fmts)
@@ -81,4 +82,4 @@ def axes_plot(axes, X, Y, fmts):
     n = len(Y)
     # 绘制N条折线
     for i in range(n):
-        axes.plot(X, Y[i], fmts[i])
+        axes.plot(X[i], Y[i], fmts[i])
